@@ -15,19 +15,28 @@ namespace StripTreeEmu
         public Form1()
         {
             InitializeComponent();
+            if (System.IO.File.Exists("res/default.jpg"))
+                loadBackground("res/default.jpg");
         }
 
+        
+        private void loadBackground(string st) {
+                Image image = Image.FromFile(st);
+                pictureBox1.Image = image;
+                pictureBox1.SizeMode = PictureBoxSizeMode.StretchImage;
+                pictureBox1.Height = image.Height;
+                pictureBox1.Width = image.Width;
+
+                this.Height = image.Height + 70;
+                this.Width = image.Width ;
+
+        }
         private void backgroundToolStripMenuItem_Click(object sender, EventArgs e)
         {
             
             if (openFileDialog_background.ShowDialog() == DialogResult.OK)
             {
-                Image image = Image.FromFile(openFileDialog_background.FileName);
-                pictureBox1.Image = image;
-                pictureBox1.SizeMode = PictureBoxSizeMode.StretchImage;
-                pictureBox1.Height = ClientRectangle.Height-100;
-                pictureBox1.Width = ClientRectangle.Width-100;
-                this.Controls.Add(pictureBox1);
+                loadBackground(openFileDialog_background.FileName);
             }
 
         }
@@ -35,8 +44,8 @@ namespace StripTreeEmu
         private void Form1_Resize(object sender, EventArgs e)
         {
             //Control control = (Control)sender;
-            pictureBox1.Height = ClientRectangle.Height - 100;
-            pictureBox1.Width = ClientRectangle.Width - 100;
+            //pictureBox1.Height = ClientRectangle.Height - 100;
+            //pictureBox1.Width = ClientRectangle.Width - 100;
         }
     }
 }
