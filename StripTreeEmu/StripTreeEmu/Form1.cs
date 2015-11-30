@@ -7,10 +7,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Xml.Linq;
+
+
+using System.Net;
+using System.Net.Sockets;
+using System.Text;
 
 namespace StripTreeEmu
 {
- 
+
 
     public partial class Form1 : Form
     {
@@ -18,7 +24,67 @@ namespace StripTreeEmu
         private PictureBox currentPB;   // selected by left or right button
 
         private List<PictureBox> widgetList;
+        
+        //Tuple<int, int> tupleWidget;
+        public class savedWidget
+        {
+            public savedWidget() { }
+            public savedWidget(int _x, int _y, int _nr)
+            {
+                x = _x;
+                y = _y;
+                nr = _nr;
+            }
+            public int x { get; set; }
+            public int y { get; set; }
+            public int nr { get; set; }
+        }
+        private void saveToXML( string fileName) {
+            XElement xml = new XElement("Widgets",
+                                            from PictureBox in widgetList
+                                            select new XElement("Widget",
+                                                new XElement("nr", (int)PictureBox.Tag),
+                                                new XElement("x", PictureBox.Left),
+                                                 new XElement("y", PictureBox.Top))
 
+                                       );
+            xml.Save(fileName);
+
+            /*
+            savedWidget tupleWidget1 = new savedWidget(1, 2);
+            savedWidget tupleWidget2 = new savedWidget(1, 3);
+            
+            var widgets = new[] {tupleWidget1,tupleWidget2};
+            */
+            /*
+            XElement xml = new XElement("tupleWidgets",
+                                            from savedWidget in widgets 
+                                            select new XElement("tupleWidget",
+                                                 new XElement("x", savedWidget.x),
+                                                 new XElement("y", savedWidget.y))
+
+                                       );
+             * 
+            xml.Save("widgets.xml");*/
+            
+        }
+
+        private void loadFromXML(string fileName) {
+            XElement xml = XElement.Load(fileName);
+            savedWidget[]  widgets = (from savedWidget in xml.Elements("Widget")
+                                 select new savedWidget
+                                         {
+                                             x = (int)savedWidget.Element("x"),
+                                             y = (int)savedWidget.Element("y"),
+                                             nr = (int)savedWidget.Element("nr")
+                                         })
+                                        .ToArray();
+
+            foreach (var item in widgets)
+            {
+                addWidget(item.x, item.y, item.nr);
+            }
+        }
 
         private int getHighestNumberOfList() {
             int retVal=0;
@@ -185,6 +251,75 @@ namespace StripTreeEmu
         {
             removeAllWidget();
         }
+
+        private void saveToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void loadToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+               
+        }
+
+        private void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            DialogResult result = saveFileDialog_W.ShowDialog();
+            if (result == DialogResult.OK) // Test result.
+            {
+                saveToXML(saveFileDialog_W.FileName);
+            }
+        }
+
+        private void loadFromToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            removeAllWidget();
+            DialogResult result = openFileDialog_W.ShowDialog();
+            if (result == DialogResult.OK) // Test result.
+            {
+                loadFromXML(openFileDialog_W.FileName);
+            }
+        }
+
+        private void layoutToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void saveToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            saveToXML("widgets.xml");
+        }
+
+        private void loadToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            removeAllWidget();
+            loadFromXML("widgets.xml");
+        }
+
+        private void StartServer()
+        {
+            layoutToolStripMenuItem.Enabled = false;
+            startToolStripMenuItem1.Enabled = false;
+
+            stopToolStripMenuItem1.Enabled = true;
+        }
+
+        private void StopServer()
+        {
+            layoutToolStripMenuItem.Enabled = true;
+            startToolStripMenuItem1.Enabled = true;
+
+            stopToolStripMenuItem1.Enabled = false;
+        }
+
+        private void startToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            StartServer();
+        }
+
+        // network part
 
 
     }

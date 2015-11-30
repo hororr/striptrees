@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Widgets>
+  <Widget>
+    <nr>1</nr>
+    <x>890</x>
+    <y>460</y>
+  </Widget>
+  <Widget>
+    <nr>2</nr>
+    <x>877</x>
+    <y>463</y>
+  </Widget>
+  <Widget>
+    <nr>3</nr>
+    <x>865</x>
+    <y>466</y>
+  </Widget>
+  <Widget>
+    <nr>4</nr>
+    <x>852</x>
+    <y>474</y>
+  </Widget>
+  <Widget>
+    <nr>5</nr>
+    <x>830</x>
+    <y>480</y>
+  </Widget>
+</Widgets>
