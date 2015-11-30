@@ -8,12 +8,15 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+
 namespace StripTreeEmu
 {
  
 
     public partial class Form1 : Form
     {
+        private int sX, sY, sW, sH, sN;
+        private int imageWidth; // loaded picture's width /res/point.png
         private Point MouseDownLocation;
         private PictureBox currentPB;   // selected by left or right button
 
@@ -48,7 +51,11 @@ namespace StripTreeEmu
 
             widgetList = new List<PictureBox>();
 
-
+            sX = 500;
+            sY = 500;
+            sH = 200;
+            sW = 200;
+            sN = 100;
 
         }
 
@@ -56,6 +63,17 @@ namespace StripTreeEmu
             foreach (PictureBox item in widgetList)
             {
                 item.Hide();
+                item.MouseDown -= widget_MouseDown;
+                item.MouseMove -= widget_MouseMove;
+                item.ContextMenuStrip = null;
+
+                if (enoughBigToFitLabel())
+                {
+                    Label l = (Label)item.Controls.OfType<Label>();
+                    l.MouseDown -= widget_MouseDown;
+                    l.MouseMove -= widget_MouseMove;
+                    l.ContextMenuStrip = null;
+                }
             }
             widgetList.Clear();
         }
@@ -66,13 +84,30 @@ namespace StripTreeEmu
                 {
                     widgetList.Remove(item);
                     pb.Hide();
+                    pb.MouseDown -= widget_MouseDown;
+                    pb.MouseMove -= widget_MouseMove;
+                    pb.ContextMenuStrip = null;
+
+                    if (enoughBigToFitLabel()) {
+                        Label l = (Label)pb.Controls.OfType<Label>();
+                        l.MouseDown -= widget_MouseDown;
+                        l.MouseMove -= widget_MouseMove;
+                        l.ContextMenuStrip = null;
+                    }
                     break;
                 }
             }
         }
 
+        private bool enoughBigToFitLabel()
+        {
+            if (imageWidth >= 20)
+                return true;
+            return false;
+        }
         private void addWidget(int Ex, int Ey, int tag) {
             Image img = Image.FromFile("res/point.png" );
+            imageWidth = img.Width;
 
             PictureBox pb = new PictureBox();
             pb.Image = img;
@@ -89,7 +124,7 @@ namespace StripTreeEmu
             pb.ContextMenuStrip = contextMenuStrip1;
 
             //write number?
-            if (img.Width >= 20)
+            if (enoughBigToFitLabel() )
             {
                 Label nr = new Label();
                 nr.Text = tag.ToString();
@@ -184,6 +219,71 @@ namespace StripTreeEmu
         private void addNewBackgroundToolStripMenuItem_Click(object sender, EventArgs e)
         {
             removeAllWidget();
+        }
+
+        private void generateTree(int sx, int sy, int width, int height, int nr)
+        {
+            int[] x = new int[nr];
+            int[] y = new int[nr];
+            
+            double xs = 0.95 * width / 2;
+            double ys = 0.45 * xs;
+            float xc = width / 2;
+            float yc = height - height / 4;
+
+            removeAllWidget();
+            for (int i = 0; i < nr; i++)
+            {
+                float t = ((float)i) / (float)nr;
+                x[i] = (int)(xc + xs * (1 - t) * Math.Sin(6 * t * 2.0 * Math.PI)) + sx;
+                y[i] = (int)(yc + ys * (1 - t) * Math.Cos(6 * t * 2.0 * Math.PI) - (height / 2) * t) + sy;
+                addWidget(x[i], y[i], i);
+            }
+
+            
+
+        }
+
+        private void generateTreeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+ 
+            //Form_Generate.ShowDialog();
+            Form_Generate f = new Form_Generate();
+            
+            /*
+            f.StartX = pictureBox1.Width / 2;
+            f.StartY = pictureBox1.Height - 20;
+            f.Width =  (int) ( (float)pictureBox1.Width * (float)0.5 );
+            f.Height = (int) ( (float)pictureBox1.Height *(float) 0.7 );
+            f.Nr = 100;
+             * */
+
+            f.StartX = sX;
+            f.StartY = sY;
+            f.MyWidth = sW;
+            f.MyHeight = sH;
+            f.Nr = sN;
+
+
+            f.SetData();
+            
+            f.ShowDialog();
+             
+            generateTree(
+                f.StartX,
+                f.StartY,
+                f.MyWidth,
+                f.MyHeight,
+                f.Nr
+                );
+
+
+            sX = f.StartX ;
+            sY = f.StartY ;
+            sW = f.MyWidth ;
+            sH = f.MyHeight ;
+            sN = f.Nr ;
+
         }
 
 
