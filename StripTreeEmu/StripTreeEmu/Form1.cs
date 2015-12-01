@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Linq;
 
-
+using System.Threading;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -20,11 +20,17 @@ namespace StripTreeEmu
 
     public partial class Form1 : Form
     {
+        private int ServerPort = 8081;
+        private Thread thdUDPServer;
+        private bool isRunning=false;
+
         private Point MouseDownLocation;
         private PictureBox currentPB;   // selected by left or right button
 
         private List<PictureBox> widgetList;
-        
+
+        Byte[] colors24;
+
         //Tuple<int, int> tupleWidget;
         public class savedWidget
         {
@@ -49,24 +55,7 @@ namespace StripTreeEmu
 
                                        );
             xml.Save(fileName);
-
-            /*
-            savedWidget tupleWidget1 = new savedWidget(1, 2);
-            savedWidget tupleWidget2 = new savedWidget(1, 3);
-            
-            var widgets = new[] {tupleWidget1,tupleWidget2};
-            */
-            /*
-            XElement xml = new XElement("tupleWidgets",
-                                            from savedWidget in widgets 
-                                            select new XElement("tupleWidget",
-                                                 new XElement("x", savedWidget.x),
-                                                 new XElement("y", savedWidget.y))
-
-                                       );
-             * 
-            xml.Save("widgets.xml");*/
-            
+           
         }
 
         private void loadFromXML(string fileName) {
@@ -106,6 +95,17 @@ namespace StripTreeEmu
             return retVal;
         }
 
+        public void setWidgetsVisibility(bool visible) {
+            
+
+            foreach (PictureBox item in widgetList)
+                {
+                    if (visible)
+                        item.Show();
+                    else
+                        item.Hide();
+                }
+        }
         public Form1()
         {
             InitializeComponent();
@@ -229,6 +229,8 @@ namespace StripTreeEmu
 
         private void pictureBox1_MouseDown(object sender, MouseEventArgs e)
         {
+            if (isRunning)
+                return;
             if ( (e).Button == System.Windows.Forms.MouseButtons.Left)
             {
                 addWidget(e.X, e.Y, getHighestNumberOfList() + 1);
@@ -300,18 +302,31 @@ namespace StripTreeEmu
 
         private void StartServer()
         {
+            isRunning = true;
             layoutToolStripMenuItem.Enabled = false;
             startToolStripMenuItem1.Enabled = false;
 
             stopToolStripMenuItem1.Enabled = true;
+
+            setWidgetsVisibility(false);
+            colors24 = new Byte[widgetList.Count*3];
+            for (int i = 0; i < widgetList.Count*3; i++)
+            {
+                colors24[i] = 0;
+            }
         }
 
         private void StopServer()
         {
+            isRunning = false;
             layoutToolStripMenuItem.Enabled = true;
             startToolStripMenuItem1.Enabled = true;
 
             stopToolStripMenuItem1.Enabled = false;
+
+            setWidgetsVisibility(true);
+
+            
         }
 
         private void startToolStripMenuItem1_Click(object sender, EventArgs e)
@@ -319,8 +334,66 @@ namespace StripTreeEmu
             StartServer();
         }
 
-        // network part
 
+        // network part
+        public void serverThread()
+        {
+            UdpClient udpClient = new UdpClient(ServerPort);
+            try
+            {
+                while (true)
+                {
+                    IPEndPoint RemoteIpEndPoint = new IPEndPoint(IPAddress.Any, 0);
+                    Byte[] receiveBytes = udpClient.Receive(ref RemoteIpEndPoint);
+                    
+                    //string returnData = Encoding.ASCII.GetString(receiveBytes);
+                    //lbConnections.Items.Add(RemoteIpEndPoint.Address.ToString() + ":" + returnData.ToString());
+                }
+            }
+            catch (ThreadInterruptedException exception)
+            {
+                /* Clean up. */
+            }
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            //start udp server
+            thdUDPServer = new Thread(new ThreadStart(serverThread));
+            thdUDPServer.IsBackground = true;
+            thdUDPServer.Start();
+            
+        }
+
+        private void pictureBox1_Paint(object sender, PaintEventArgs e)
+        {
+
+            if (isRunning)
+            {
+                
+                foreach (PictureBox item in widgetList)
+                {
+                    //colors24  
+                    //itn i=colors24[item.Tag * 3 + 0];
+                    //Color.FromArgb(255, 0, 0)
+                    int nr=(int)item.Tag;
+                    Color c = Color.FromArgb(colors24[nr], colors24[nr + 1], colors24[nr + 2]);
+                    e.Graphics.FillEllipse(new System.Drawing.SolidBrush(c), new Rectangle(item.Left, item.Top, item.Width, item.Height));
+                }
+
+            }
+
+        }
+
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            
+        }
+
+        private void stopToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            StopServer();
+        }
 
     }
 }
