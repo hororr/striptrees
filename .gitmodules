@@ -1,0 +1,6 @@
+[submodule "UDPTestClient"]
+	path = UDPTestClient
+	url = https://github.com/hororr/UDPTestClient.git
+[submodule "StripTreeEmu"]
+	path = StripTreeEmu
+	url = https://github.com/hororr/StripTreeEmu.git
