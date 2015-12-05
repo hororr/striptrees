@@ -3,6 +3,7 @@ Content of frames
 char magic[3];	// "SOF"
 struct Header header;
 char data[]; 
+char magic[3];	// "EOF"
 
 
 struct Header {
