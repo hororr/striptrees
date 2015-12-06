@@ -9,6 +9,7 @@ char magic[3];	// "EOF"
 struct Header {
 uint16	dataLength;	// only data in bytes
 uint16 	crc16;
+uint16	sequence
 uint8 	msgType;
 uint8	reserved;
 }
@@ -18,7 +19,7 @@ uint8	reserved;
 msgType	dataLength	Name
 0	0		Ping
 1	0		Pong
-2	2(uint16)	Set number of leds
+2	2(uint16)	Set "number of leds"
 3	x		Raw led data(rgb24)		
 
 10	1(speed)	Program speed +
@@ -31,5 +32,7 @@ msgType	dataLength	Name
 
 20	1(program)	Programs start
 21	0		Programs stop	
+
+255	0		ACK
 
 
