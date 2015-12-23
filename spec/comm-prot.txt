@@ -15,12 +15,26 @@ uint8	reserved;
 }
 
 
-
 msgType	dataLength	Name
+
+IMPLEMENTED FEATURES:
+3	x		Raw led data(rgb24)		
+
+20	1(program)	Programs start
+
+50	0		AUTO mode
+51	0		TEST mode
+52	0		MANUAL mode
+
+
+60	1		Set FPS (uint8)
+
+
+NOT YET IMPLEMENTED FEATURES:
+
 0	0		Ping
 1	0		Pong
 2	2(uint16)	Set "number of leds"
-3	x		Raw led data(rgb24)		
 
 10	1(speed)	Program speed +
 11	1(speed)	Program speed -
@@ -30,16 +44,9 @@ msgType	dataLength	Name
 15	1(speed)	Bringhtness +
 16	1(speed)	Bringhtness -
 
-20	1(program)	Programs start
-21	0		Programs stop	
+21	0		Programs stop	(why??:)) )
 
-
-50	0		AUTO mode
-51	0		TEST mode
-52	0		MANUAL mode
 53	0		COMM mode
-
-60	1		Set FPS (uint8)
 
 
 255	0		ACK
