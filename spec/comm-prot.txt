@@ -33,6 +33,15 @@ msgType	dataLength	Name
 20	1(program)	Programs start
 21	0		Programs stop	
 
+
+50	0		AUTO mode
+51	0		TEST mode
+52	0		MANUAL mode
+53	0		COMM mode
+
+60	1		Set FPS (uint8)
+
+
 255	0		ACK
 
 
