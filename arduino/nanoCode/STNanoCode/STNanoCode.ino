@@ -1,4 +1,5 @@
 #include <Adafruit_NeoPixel.h>
+#include "serial_comm.h"
 
 /* changed from #defined constants to variables 2015-12-15 Mel Lester Jr.
   The following two lines are all you may need to change for your project */
@@ -19,13 +20,46 @@ Adafruit_NeoPixel strip = Adafruit_NeoPixel(pixels, dataPin, NEO_RGB + NEO_KHZ80
 // and minimize distance between Arduino and first pixel.  Avoid connecting
 // on a live circuit...if you must, connect GND first.
 
+
 void setup() {
   strip.begin();
   strip.show(); // Initialize all pixels to 'off'
+  InitSerials();
+
+  pinMode(13, OUTPUT);          // sets the digital pin 13 as output
+
+}
+
+void showPixelData() {
+  uint16_t nrPixels;
+  char * firstPixel;
+  
+  if ( (rxPos-14) < strip.numPixels()) {
+    nrPixels = rxPos-14;
+  } else {
+    nrPixels = strip.numPixels();
+  }
+
+  firstPixel = myRXBuffer[11];
+  
+  for(uint16_t i=0; i< nrPixels ; i++) {
+      strip.setPixelColor(i, strip.Color(firstPixel, firstPixel+1, firstPixel+2) );
+      firstPixel+=3;
+  }
+
+  strip.show();
+
 }
 
 void loop() {
+  receiveSerials();
+  if (hasPixelData) {
+    showPixelData();
+    hasPixelData=false;
+  }
+    
   // Some example procedures showing how to display to the pixels:
+  /*
   colorWipe(strip.Color(255, 0, 0), 50); // Red
   colorWipe(strip.Color(0, 255, 0), 50); // Green
   colorWipe(strip.Color(0, 0, 255), 50); // Blue
@@ -37,6 +71,7 @@ void loop() {
   rainbow(20);
   rainbowCycle(20);
   theaterChaseRainbow(50);
+  */
 }
 
 // Fill the dots one after the other with a color
