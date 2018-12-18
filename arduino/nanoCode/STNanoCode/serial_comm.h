@@ -9,11 +9,13 @@
 
 bool receiveSerials(void);
 void InitSerials(void);
-
+void resetRXBuffer(void);
+void DebugWrite(const char * pString);
 
 extern char myRXBuffer[RX_BUFF_SIZE];
 extern int rxPos;
 extern bool hasPixelData;
+extern bool enable_debug;
 
 /*
  * communication (always MSB first)

@@ -30,6 +30,7 @@ void InitSerials(void) {
 }
 
 void ProcessRxFrame(void) {
+    rxPos++;
     DebugWrite("\r\nPacket received!\r\n");
     toggle_led();
     //Serial.write(myRXBuffer,rxPos);
@@ -37,6 +38,11 @@ void ProcessRxFrame(void) {
 
     hasPixelData=true;
     
+}
+
+void resetRXBuffer(void) {
+  memset(myRXBuffer,0,RX_BUFF_SIZE);
+  rxPos=0;
 }
 
 bool checkRxFrame() {

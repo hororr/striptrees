@@ -31,22 +31,54 @@ void setup() {
 }
 
 void showPixelData() {
-  uint16_t nrPixels;
-  char * firstPixel;
+  strip.clear();
   
-  if ( (rxPos-14) < strip.numPixels()) {
-    nrPixels = rxPos-14;
+  uint16_t nrPixels;
+  byte * firstPixel;
+
+  DebugWrite("RXPOS=");
+  Serial.print((int)rxPos);
+  DebugWrite("\r\n");
+
+  DebugWrite("MSG=\r\n");
+  
+  for(uint16_t i=0; i< rxPos ; i++) {
+      Serial.print( (byte)myRXBuffer[i] );
+      Serial.write(",");
+  }
+
+  DebugWrite("END MSG\r\n");
+  
+  if ( (rxPos-17) < strip.numPixels()) {
+    nrPixels = rxPos-17;
   } else {
     nrPixels = strip.numPixels();
   }
 
-  firstPixel = myRXBuffer[11];
+  nrPixels /=3;
+
+  DebugWrite("nrPixels=");
+  Serial.print((uint16_t)nrPixels);
+  DebugWrite("\r\n");
+
+
+ 
+  firstPixel = &myRXBuffer[14];
   
   for(uint16_t i=0; i< nrPixels ; i++) {
-      strip.setPixelColor(i, strip.Color(firstPixel, firstPixel+1, firstPixel+2) );
+      Serial.write("R=");
+      Serial.print((byte)(*firstPixel));
+      Serial.write(",G=");
+      Serial.print((byte)*(firstPixel+1) );
+      Serial.write(",B=");
+      Serial.print((byte)*(firstPixel+2) );
+      Serial.write("\r\n");   
+      
+      strip.setPixelColor(i, strip.Color( *firstPixel, *(firstPixel+1), *(firstPixel+2)) );
       firstPixel+=3;
   }
-
+  DebugWrite("\r\n");
+  
   strip.show();
 
 }
@@ -55,6 +87,7 @@ void loop() {
   receiveSerials();
   if (hasPixelData) {
     showPixelData();
+    resetRXBuffer();
     hasPixelData=false;
   }
     
