@@ -3,7 +3,7 @@
 
 SoftwareSerial mySerial(2, 7); // RX, TX
 
-bool enable_debug=true;
+bool enable_debug=false;
 
 char StartOfFrame[]="SOF";
 char EndOfFrame[]="EOF";
@@ -43,6 +43,7 @@ void ProcessRxFrame(void) {
 void resetRXBuffer(void) {
   memset(myRXBuffer,0,RX_BUFF_SIZE);
   rxPos=0;
+  DebugWrite("DELETED\r\n");
 }
 
 bool checkRxFrame() {
@@ -62,9 +63,7 @@ bool checkRxFrame() {
               return true;
             } else {
                 // No start ->  reset
-                memset(myRXBuffer,0,RX_BUFF_SIZE);
-                DebugWrite("DELETED\r\n");
-                rxPos=0;
+                resetRXBuffer();
                 return false;
             }
       }
@@ -87,8 +86,7 @@ bool receiveSerials(void) {
 
       } else {
         // overflow? clear buffer!
-        memset(myRXBuffer,0,RX_BUFF_SIZE);
-        rxPos=0;
+        resetRXBuffer();
         break;
       }
   }
@@ -103,8 +101,7 @@ bool receiveSerials(void) {
 
     } else {
       // overflow? clear buffer!
-      memset(myRXBuffer,0,RX_BUFF_SIZE);
-      rxPos=0;
+      resetRXBuffer();
       break;
     }
   }

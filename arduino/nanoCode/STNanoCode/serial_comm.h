@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include <SoftwareSerial.h>
 
-#define RX_BUFF_SIZE  1024
+#define RX_BUFF_SIZE  32
 
 bool receiveSerials(void);
 void InitSerials(void);

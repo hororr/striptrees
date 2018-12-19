@@ -36,6 +36,7 @@ void showPixelData() {
   uint16_t nrPixels;
   byte * firstPixel;
 
+  /*
   DebugWrite("RXPOS=");
   Serial.print((int)rxPos);
   DebugWrite("\r\n");
@@ -48,6 +49,7 @@ void showPixelData() {
   }
 
   DebugWrite("END MSG\r\n");
+  */
   
   if ( (rxPos-17) < strip.numPixels()) {
     nrPixels = rxPos-17;
@@ -57,15 +59,17 @@ void showPixelData() {
 
   nrPixels /=3;
 
+  /*
   DebugWrite("nrPixels=");
   Serial.print((uint16_t)nrPixels);
   DebugWrite("\r\n");
-
+  */
 
  
   firstPixel = &myRXBuffer[14];
   
   for(uint16_t i=0; i< nrPixels ; i++) {
+      /*
       Serial.write("R=");
       Serial.print((byte)(*firstPixel));
       Serial.write(",G=");
@@ -73,7 +77,7 @@ void showPixelData() {
       Serial.write(",B=");
       Serial.print((byte)*(firstPixel+2) );
       Serial.write("\r\n");   
-      
+      */
       strip.setPixelColor(i, strip.Color( *firstPixel, *(firstPixel+1), *(firstPixel+2)) );
       firstPixel+=3;
   }
