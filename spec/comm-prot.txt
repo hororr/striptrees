@@ -1,14 +1,14 @@
 Content of frames
 
-char magic[3];	// "SOF"
+char magic_start[3];	// "SOF"
 struct Header header;
 char data[]; 
-char magic[3];	// "EOF"
+char magic2_end[3];	// "EOF"
 
 
 struct Header {
 uint16	dataLength;	// only data in bytes
-uint16 	crc16;
+uint16 	crc16;		// not used
 uint16	sequence
 uint8 	msgType;
 uint8	reserved;
@@ -50,5 +50,16 @@ NOT YET IMPLEMENTED FEATURES:
 
 
 255	0		ACK
+
+
+
+IMPLEMENTED FEATURES for arduino nano:
+3	x		Raw led data(rgb24) to first strip
+			'reserved' is the offset: if it is 0, the first bytes will be the first pixel.
+
+10   	x		Show the results
+11   	x		All OFF
+
+
 
 
