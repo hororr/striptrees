@@ -17,7 +17,7 @@ void DebugWrite(const char * pString) {
 }
 
 void InitSerials(void) {
-  mySerial.begin(115200);
+  mySerial.begin(57600);
   Serial.begin(115200);
 
   while (!Serial) {

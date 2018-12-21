@@ -29,7 +29,7 @@ void setup() {
   while (Serial1) {
     ; // wait for serial port to connect. Needed for Leonardo only
   }
-  while (!Serial1) {
+  while (!Serial1) {0
     ; // wait for serial port to connect. Needed for Leonardo only
   }
 
@@ -53,7 +53,7 @@ void setup() {
   startPrg();
 
   Serial.begin(115200);
-  Serial1.begin(115200);
+  Serial1.begin(57600);
 
 }
 //extern WiFiUDP udp;
