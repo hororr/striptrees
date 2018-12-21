@@ -39,6 +39,15 @@ void setup() {
   next_prg = global_timer + 360000; // 5 percentként új program
   
   startPrg();
+  
+  Serial1.begin(57600); 
+  Serial.write("Started\r\n");
+ /*
+    Serial1.write("SOF           ~   ~   ~EOF");
+    delay(1000);
+    Serial1.write("SOF           ~   ~~  ~EOF");
+    delay(1000);
+*/
 
 }
 //extern WiFiUDP udp;

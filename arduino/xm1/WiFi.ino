@@ -13,6 +13,7 @@
 
 CircularBuffer <stripArrayStruct,16> stripArray;
 stripArrayStruct udpStripArray;
+stripArrayStruct udpStripArray2;
 
 const char *ssid = "UPC1837309";
 const char *password = "VUKTKVJG";
@@ -28,6 +29,7 @@ unsigned int localPort = 8081;      // local port to listen for UDP packets
 const int PACKET_SIZE = 1000; 
 byte packetBuffer[ PACKET_SIZE]; //buffer to hold incoming and outgoing packets
 
+byte txSerialPacket[PACKET_SIZE]; //buff to send serial
 
 
 void Wifi_HandleClients() {
@@ -209,6 +211,13 @@ int ParseUDP(currentProgramType _type) {
           }
         } else if (_type == PROG_TEST) { // DISPLAY
             memcpy(pixels.getPixels(),&packetBuffer[11],900); // displaying?
+        }
+    } else if ( packetBuffer[9] == CMD_RAW24_2 ) {
+        if (_type == PROG_TEST) { // DISPLAY
+            //memcpy(txSerialPacket,&packetBuffer[0],cb); // pass-through
+            Serial1.write(&packetBuffer[0],cb); 
+            Serial1.flush();
+            delay(25);   //25 ms delay
         }
     } else if ( packetBuffer[9] == CMD_SET_FPS ) {
       currentFps = (unsigned int) packetBuffer[11];
