@@ -4,7 +4,7 @@
 /* changed from #defined constants to variables 2015-12-15 Mel Lester Jr.
   The following two lines are all you may need to change for your project */
 int dataPin = 6;  // Arduino PWM data pin D6
-int pixels = 50;  // number of Neopixels
+int pixels = 100;  // number of Neopixels
 
 // Parameter 1 = number of pixels in strip
 // Parameter 2 = Arduino pin number (most are valid)
@@ -27,7 +27,7 @@ void setup() {
   InitSerials();
 
   pinMode(13, OUTPUT);          // sets the digital pin 13 as output
-
+  //led_on();
 }
 
 void showPixelData() {
@@ -66,7 +66,7 @@ void showPixelData() {
   */
 
  
-  firstPixel = &myRXBuffer[14];
+  firstPixel = &myRXBuffer[11];
   
   for(uint16_t i=0; i< nrPixels ; i++) {
       /*
@@ -81,19 +81,21 @@ void showPixelData() {
       strip.setPixelColor(i, strip.Color( *firstPixel, *(firstPixel+1), *(firstPixel+2)) );
       firstPixel+=3;
   }
-  DebugWrite("\r\n");
+  DebugWrite("show()");
   
   strip.show();
 
 }
 
 void loop() {
-  receiveSerials();
-  if (hasPixelData) {
-    showPixelData();
-    resetRXBuffer();
-    hasPixelData=false;
-  }
+
+      
+   receiveSerials();
+   if (hasPixelData) {
+      showPixelData();
+      resetRXBuffer();
+      hasPixelData=false;
+    }
     
   // Some example procedures showing how to display to the pixels:
   /*

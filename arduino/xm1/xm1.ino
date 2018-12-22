@@ -8,7 +8,7 @@
 unsigned long global_timer = 0;
 unsigned long next_update = 0;
 unsigned long next_prg = 0;
-unsigned int currentFps=25;
+unsigned int currentFps=20;
 bool isRunning=false; // manual mode is running
 boolean nextProg = false;
 
@@ -40,7 +40,7 @@ void setup() {
   
   startPrg();
   
-  Serial1.begin(57600); 
+  Serial1.begin(38400); 
   Serial.write("Started\r\n");
  /*
     Serial1.write("SOF           ~   ~   ~EOF");

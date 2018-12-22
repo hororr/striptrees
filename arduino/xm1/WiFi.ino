@@ -1,4 +1,4 @@
-/* 
+﻿/* 
  *  
  *  WIFI STUFF
  *  
@@ -15,8 +15,8 @@ CircularBuffer <stripArrayStruct,16> stripArray;
 stripArrayStruct udpStripArray;
 stripArrayStruct udpStripArray2;
 
-const char *ssid = "UPC1837309";
-const char *password = "VUKTKVJG";
+const char *ssid = "UPC1837310";
+const char *password = "";
 const char* hostn = "xmastree";
 
 MDNSResponder mdns;
@@ -214,10 +214,15 @@ int ParseUDP(currentProgramType _type) {
         }
     } else if ( packetBuffer[9] == CMD_RAW24_2 ) {
         if (_type == PROG_TEST) { // DISPLAY
-            //memcpy(txSerialPacket,&packetBuffer[0],cb); // pass-through
-            Serial1.write(&packetBuffer[0],cb); 
-            Serial1.flush();
-            delay(25);   //25 ms delay
+            memcpy(txSerialPacket,&packetBuffer[0],cb); // pass-through
+            
+            Serial.write("RGB24_cmd_received:");
+            Serial.print(cb);
+            Serial.write("\r\n");
+            
+            Serial1.write(txSerialPacket,cb); 
+            //Serial1.flush();
+            delay(100);   //25 ms delay
         }
     } else if ( packetBuffer[9] == CMD_SET_FPS ) {
       currentFps = (unsigned int) packetBuffer[11];

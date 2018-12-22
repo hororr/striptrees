@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include <SoftwareSerial.h>
 
-#define RX_BUFF_SIZE  32
+#define RX_BUFF_SIZE  1024
 
 bool receiveSerials(void);
 void InitSerials(void);
@@ -20,7 +20,7 @@ extern bool enable_debug;
 /*
  * communication (always MSB first)
  * 
- * header=(total 14b)
+ * header=(total 11b)
  * 
  * SOF 3b
  * data length 2b

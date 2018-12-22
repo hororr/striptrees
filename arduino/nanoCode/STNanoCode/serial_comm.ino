@@ -3,7 +3,7 @@
 
 SoftwareSerial mySerial(2, 7); // RX, TX
 
-bool enable_debug=false;
+bool enable_debug=true;
 
 char StartOfFrame[]="SOF";
 char EndOfFrame[]="EOF";
@@ -17,7 +17,7 @@ void DebugWrite(const char * pString) {
 }
 
 void InitSerials(void) {
-  mySerial.begin(57600);
+  mySerial.begin(38400);
   Serial.begin(115200);
 
   while (!Serial) {
@@ -75,6 +75,12 @@ bool checkRxFrame() {
 
 bool receiveSerials(void) {
   // receive if possible
+  /*
+  while (mySerial.available()) {
+    Serial.write(mySerial.read());
+  }
+  return false;
+*/
   
   while (mySerial.available()) {
       
@@ -90,7 +96,7 @@ bool receiveSerials(void) {
         break;
       }
   }
-
+  
   while (Serial.available()) {
     
     if (rxPos<RX_BUFF_SIZE) {
@@ -105,5 +111,6 @@ bool receiveSerials(void) {
       break;
     }
   }
+  
   
 }
