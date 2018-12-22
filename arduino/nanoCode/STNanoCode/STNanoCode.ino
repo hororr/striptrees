@@ -57,7 +57,8 @@ void showPixelData() {
     nrPixels = strip.numPixels();
   }
 
-  nrPixels /=3;
+  //nrPixels /=3;   //RGB24
+ 
 
   /*
   DebugWrite("nrPixels=");
@@ -78,8 +79,17 @@ void showPixelData() {
       Serial.print((byte)*(firstPixel+2) );
       Serial.write("\r\n");   
       */
-      strip.setPixelColor(i, strip.Color( *firstPixel, *(firstPixel+1), *(firstPixel+2)) );
-      firstPixel+=3;
+      //strip.setPixelColor(i, strip.Color( *firstPixel, *(firstPixel+1), *(firstPixel+2)) ); // RGB24
+      //firstPixel+=3; // RGB24
+
+      byte pix = *firstPixel;
+      byte p_red = pix&0xe0;
+      byte p_green = (pix<<3)&0xe0;
+      byte p_blue = pix<<6;
+      strip.setPixelColor(i, strip.Color(p_red , p_green, p_blue) );  //RGB8-3:3:2
+      firstPixel++;  //RGB8-3:3:2
+      
+      
   }
   DebugWrite("show()");
   

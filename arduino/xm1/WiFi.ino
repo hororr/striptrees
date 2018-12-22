@@ -1,4 +1,4 @@
-﻿/* 
+/* 
  *  
  *  WIFI STUFF
  *  
@@ -102,13 +102,13 @@ void ShowWifiStatus(int s) {
   uint8_t g=0;
   uint8_t b=0;
   switch(s) {
-    case W_INIT:  // fehér
+    case W_INIT:  // feh�r
       r=g=b=127;
       break;
-    case W_WAIT: // kék
+    case W_WAIT: // k�k
       r=g=0; b=127;
       break;
-    case W_READY: // ződ
+    case W_READY: // z�d
       r=b=0; g=127;
       break;
     case W_FAIL: // peros
@@ -214,16 +214,42 @@ int ParseUDP(currentProgramType _type) {
         }
     } else if ( packetBuffer[9] == CMD_RAW24_2 ) {
         if (_type == PROG_TEST) { // DISPLAY
-            memcpy(txSerialPacket,&packetBuffer[0],cb); // pass-through
+            //memcpy(txSerialPacket,&packetBuffer[0],cb); // pass-through
+
             
+            int pixels = cb - 14; // all pre post header included
+
+            //copy first part
+            memcpy(txSerialPacket,&packetBuffer[0],11); // 11b
+
+            byte * pSrcPix=&packetBuffer[11];
+                        
+            for(int i=0; i<pixels ; i++) {
+               
+                byte red = (*pSrcPix)&0xe0;
+                byte green = ((*(pSrcPix+1))>>3)&0x1c;
+                byte blue = (*(pSrcPix+2))>>5;
+                
+                txSerialPacket[11+i]= red | green | blue;
+                pSrcPix+=3;
+            }
+            memcpy(&txSerialPacket[11+pixels],"EOF",3); // 11b
+            
+            
+            /*
             Serial.write("RGB24_cmd_received:");
             Serial.print(cb);
             Serial.write("\r\n");
-            
+            */
             Serial1.write(txSerialPacket,cb); 
-            //Serial1.flush();
-            delay(100);   //25 ms delay
+            Serial1.flush();
+            delay(5);   //5 ms delay
         }
+    } else if ( packetBuffer[9] == CMD_RAW8 ) {
+            memcpy(txSerialPacket,&packetBuffer[0],cb); // pass-through
+            Serial1.write(txSerialPacket,cb); 
+            Serial1.flush();
+            delay(5);   //5 ms delay
     } else if ( packetBuffer[9] == CMD_SET_FPS ) {
       currentFps = (unsigned int) packetBuffer[11];
       if ( currentFps > MAX_FPS)

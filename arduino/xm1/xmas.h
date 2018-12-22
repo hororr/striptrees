@@ -9,7 +9,7 @@
 #define MAX_FPS 60
 
 enum currentProgramType { PROG_AUTO=50, PROG_TEST=51, PROG_MANUAL=52, PROG_COMM=53 };
-enum networkCommands { CMD_RAW24=3 , CMD_RAW24_2 = 4, CMD_PGM_START=20, CMD_SET_FPS=60 };
+enum networkCommands { CMD_RAW24=3 , CMD_RAW24_2 = 4, CMD_RAW8 = 5 , CMD_PGM_START=20, CMD_SET_FPS=60 };
 //#define CMD_SET_FPS     60
 //#define CMD_RAW24       3
 
